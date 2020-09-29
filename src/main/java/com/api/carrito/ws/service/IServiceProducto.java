@@ -1,14 +1,15 @@
 package com.api.carrito.ws.service;
 
-import com.api.carrito.ws.model.ProductoEntity;
-
 import java.util.List;
+
+import com.api.carrito.ws.model.ProductoEntity;
+import com.api.carrito.ws.util.ErrorHandler;
 
 public interface IServiceProducto {
 
-    public ProductoEntity saveProducto(ProductoEntity producto);
-    public List<ProductoEntity> findAllProdcutos();
-    public ProductoEntity updProducto(ProductoEntity producto);
-    public void deleteProducto(int id);
+    public ProductoEntity saveProducto(ProductoEntity producto) throws ErrorHandler;
+    public List<ProductoEntity> findAllProdcutos() throws ErrorHandler;
+    public ProductoEntity updProducto(ProductoEntity producto) throws ErrorHandler;
+    public void deleteProducto(int id) throws ErrorHandler;
 
 }

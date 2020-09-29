@@ -24,7 +24,9 @@ public class VentaEntity {
 		
 	}
 	
-	public VentaEntity() {}
+	public VentaEntity() {
+		
+	}
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

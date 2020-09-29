@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IRepositoryDetalleVenta  extends JpaRepository<DetalleVentaEntity,Integer> {
 	
-	Optional<DetalleVentaEntity> findByIdVenta(int id);
+	Optional<DetalleVentaEntity> findByIdVenta(int id) ;
 }

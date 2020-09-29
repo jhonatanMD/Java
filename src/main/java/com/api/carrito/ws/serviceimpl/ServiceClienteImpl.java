@@ -1,15 +1,17 @@
 package com.api.carrito.ws.serviceimpl;
 
-import com.api.carrito.ws.model.ClienteEntity;
-import com.api.carrito.ws.repository.IRepositoryCliente;
-import com.api.carrito.ws.service.IServiceCliente;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.api.carrito.ws.model.ClienteEntity;
+import com.api.carrito.ws.repository.IRepositoryCliente;
+import com.api.carrito.ws.service.IServiceCliente;
+import com.api.carrito.ws.util.ErrorHandler;
 
 @Service
 public class ServiceClienteImpl implements IServiceCliente {
@@ -21,25 +23,72 @@ public class ServiceClienteImpl implements IServiceCliente {
     IRepositoryCliente Icliente;
 
     @Override
-    public ClienteEntity saveCliente(ClienteEntity cliente) {
+    public ClienteEntity saveCliente(ClienteEntity cliente) throws ErrorHandler{
 
-    	logCliente.info("Se guardo cliente" + cliente.toString());
-        return Icliente.save(cliente);
+    	ClienteEntity clienter = null;
+    	
+    	try {
+    		
+    		clienter = Icliente.save(cliente);
+    		
+    		if(clienter == null)
+    		{
+    			throw new ErrorHandler("Hubo un problema al registrar al cliente");
+    		}
+    		
+    		logCliente.info("Se guardo cliente" + cliente.toString());
+
+    		return clienter;
+    	}
+    	catch(Exception e) {
+    		
+    		logCliente.error("Se Presento el siguiente error : " + e.getMessage());
+    		throw new ErrorHandler("Hubo un problema con el servidor");
+    	}
+    	
+    	
+    	
     }
 
     @Override
-    public List<ClienteEntity> findAllClientes() {
+    public List<ClienteEntity> findAllClientes() throws ErrorHandler{
 
-    	logCliente.info("Se listo clientes " + Icliente.findAll());
-        return Icliente.findAll();
+    	try {
+    		
+    		logCliente.info("Se listo clientes " + Icliente.findAll());
+    		return Icliente.findAll();
+    	}catch (Exception e) {
+    		
+    		logCliente.error("Se presento el siguiente error" + e.getMessage());
+    		throw new ErrorHandler("Hubo un problema al listar los Clientes");
+		}
+    	
+        
     }
 
 	@Override
-	public ClienteEntity findById(int id) {
+	public ClienteEntity findById(int id) throws  ErrorHandler {
 		
-		logCliente.info("Se filtro cliente por id: " + id);
-		return Icliente.findAll()
-				.stream().filter( x -> x.getId() == id)
-				.collect(Collectors.toList()).get(0);
+		
+		ClienteEntity cliente = null;
+		
+		
+		try {
+			
+			cliente = Icliente.findAll()
+					.stream().filter( x -> x.getId() == id)
+					.collect(Collectors.toList()).get(0);
+			logCliente.info("Se filtro cliente por id: " + id);
+		
+			
+			return cliente;
+			
+		}catch (Exception e) {
+			logCliente.error("No se encontro cliente con el id "+ id +" status : "+HttpStatus.INTERNAL_SERVER_ERROR.value());
+			throw new ErrorHandler("Ocurrio un error en el servidor");
+		}
+		
+
+		
 	}
 }
